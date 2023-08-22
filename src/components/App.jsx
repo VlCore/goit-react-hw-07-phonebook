@@ -1,47 +1,32 @@
-// import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact,removeContact, setFilter } from 'redux/contactsSlice';
+
+import { useSelector } from 'react-redux';
 import { Section } from "./Section/Section"
 import { SimpleForm } from "./Form/SimpleForm";
-import { nanoid } from 'nanoid'
 import { ContactsList } from "./ContactsList/ContactsList";
 import { Filter } from "./Filter/Filter";
 import { Container, GeneralTitle } from "./App.styled";
   
   const App = () => {
-    const dispatch = useDispatch();
-    const contacts = useSelector(state => state.contacts.contacts);
-    const filter = useSelector(state => state.contacts.filter);
-  
-    const onAddContact = user => {
-      if (contacts.find(el => el.name === user.name)) {
-        alert(`${user.name} is already in contacts`);
-        return;
-      }
-      dispatch(addContact([{ ...user, id: nanoid() }]));
-    };
-  
-    const onChangedFilter = ({ target: { value } }) => {
-      dispatch(setFilter(value));
-    };
-  
-    const handleRemoveContact = id => {
-      dispatch(removeContact(id));
+    const contacts = useSelector(state => state.contacts.items);
+    const filtered = useSelector(state => state.filter);
+    const filterContact = e => {
+      const filteredContacts = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(filtered.toLowerCase())
+      );
+      return filteredContacts;
     };
   
     return (
       <Container>
         <GeneralTitle>Phonebook</GeneralTitle>
         <Section>
-          <SimpleForm onAddContact={onAddContact} />
+          <SimpleForm />
         </Section>
-  
-        <Section title="Find contacts by name">
-          <Filter onChangedFilter={onChangedFilter} filterValue={filter} />
+        <Section>
+          <Filter />
         </Section>
-  
         <Section title="Contacts">
-          <ContactsList contacts={contacts} filterValue={filter} removeContact={handleRemoveContact} />
+          <ContactsList listContact={filterContact()} />
         </Section>
       </Container>
     );
