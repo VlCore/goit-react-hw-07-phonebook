@@ -19,7 +19,7 @@ const sliceContact = createSlice({
     items: [
       {
         name: 'Test Name',
-        phone: '(570) 817-2230',
+        phone: '(068) 00-55703',
         id: '1',
       },
     ],
