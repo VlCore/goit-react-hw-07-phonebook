@@ -26,7 +26,7 @@ import { Container, GeneralTitle } from "./App.styled";
       <Container>
         <GeneralTitle>Phonebook</GeneralTitle>
         <Section>
-          <SimpleForm />
+          <SimpleForm contacts={contacts}/>
         </Section>
         <Section>
           <Filter />
