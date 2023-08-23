@@ -1,5 +1,6 @@
-
-import { useSelector } from 'react-redux';
+import { getContactsThunk } from 'redux/contactsThunk';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Section } from "./Section/Section"
 import { SimpleForm } from "./Form/SimpleForm";
 import { ContactsList } from "./ContactsList/ContactsList";
@@ -8,6 +9,7 @@ import { Container, GeneralTitle } from "./App.styled";
   
   const App = () => {
     const contacts = useSelector(state => state.contacts.items);
+    const dispatch = useDispatch();
     const filtered = useSelector(state => state.filter);
     const filterContact = e => {
       const filteredContacts = contacts.filter(contact =>
@@ -15,6 +17,10 @@ import { Container, GeneralTitle } from "./App.styled";
       );
       return filteredContacts;
     };
+
+    useEffect(() => {
+      dispatch(getContactsThunk());
+    }, [dispatch]);
   
     return (
       <Container>

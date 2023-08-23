@@ -1,53 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {Button, FieldNew, InputContainer, Lable, NewForm} from './SimpleForm.styled'
-import { useDispatch, useSelector } from 'react-redux';
-import { addContactsThunk, getContactsThunk } from 'redux/contactsThunk';
+import { useDispatch } from 'react-redux';
+import { addContactsThunk } from 'redux/contactsThunk';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const SimpleForm = () => {
+export const SimpleForm = ({contacts}) => {
     const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
-  
-    useEffect(() => {
-      dispatch(getContactsThunk());
-    }, [dispatch]);
   
     const handleChange = evt => {
       const { name, value } = evt.target;
       name === 'name' ? setName(value) : setNumber(value);
     };
   
+    const handleSubmit = e => {
+      e.preventDefault();
+  
+      const notify = () => toast(`${name} is already in contacts`);
+      const contact = {
+        name: name,
+        phone: number,
+      };
+  
+      if (
+        contacts.some(value => value.name.toLocaleLowerCase() === name.toLocaleLowerCase())
+      ) {
+        notify();
+      } else {
+        dispatch(addContactsThunk(contact));
+        reset();
+      }
+    };
+
     const reset = () => {
       setName('');
       setNumber('');
     };
   
-    const contacts = useSelector(state => state.contacts.items);
-  
     return (
       <NewForm
-        onSubmit={e => {
-          const notify = () => toast(`${name} is already in contacts`);
-          const contact = {
-            name: name,
-            phone: number,
-          };
-  
-          e.preventDefault();
-  
-          if (
-            contacts.some(
-              value => value.name.toLocaleLowerCase() === name.toLocaleLowerCase()
-            )
-          ) {
-            notify();
-          } else {
-            dispatch(addContactsThunk(contact));
-            reset();
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         <InputContainer>
           <Lable>
